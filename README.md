@@ -90,7 +90,8 @@ behaviour):
   (behaviour lselenium)
   (export all))
 
-(include-lib "include/ltest-macros.lfe")
+(include-lib "ltest/include/ltest-macros.lfe")
+(include-lib "lse/include/lse-macros.lfe")
 
 (defun get-session ()
   'lselenium-session)
