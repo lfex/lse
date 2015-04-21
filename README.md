@@ -11,6 +11,7 @@
 * [Usage](#usage-)
   * [From the REPL](#from-the-repl-)
   * [In a Test Suite](#in-a-test-suite-)
+  * [Running a Suite](#running-a-suite-)
 
 
 ## Introduction [&#x219F;](#table-of-contents)
@@ -134,19 +135,44 @@ behaviour):
       google-submit-search)))
 ```
 
-To run selenium tests, you will need to add a ``make`` target like the
-following, since ``lfetool`` doesn't yet support the ``lselenium``
-behaviour:
+Note that for now, only ``foreach`` fixtures are supported.
+
+### Running a Suite [&#x219F;](#table-of-contents)
+
+To run selenium tests, you will need to:
+
+* start the Chrome driver
+* run the selenium tests
+* stop the Chrome driver
+
+You'll probably want to add ``make`` targets for these, something
+like the following:
 
 
 ```Makefile
-check-selenium-only: clean-eunit compile-tests
-	@clear
-	@PATH=$(SCRIPT_PATH) ERL_LIBS=$(ERL_LIBS) \
-	erl -cwd "`pwd`" -listener ltest-listener -eval \
-	"case 'ltest-runner':selenium() of ok -> halt(0); _ -> halt(127) end" \
-	-noshell
-```
+$(CHROMEDRIVER):
+    mkdir -p bin
+    cd bin && \
+    curl -O http://chromedriver.storage.googleapis.com/2.9/chromedriver_mac32.zip && \
+    unzip chromedriver_mac32.zip
 
-Note that for now, only ``foreach`` fixtures are supported.
+start-chromedriver: $(CHROMEDRIVER)
+    -@$(CHROMEDRIVER) --verbose &
+
+stop-chromedriver:
+    @ps aux|grep $(CHROMEDRIVER)|grep -v grep|awk '{print $$2}'|xargs kill -15
+
+check-selenium-only:
+    @clear
+    @PATH=$(SCRIPT_PATH) ERL_LIBS=$(ERL_LIBS) \
+    erl -cwd "`pwd`" -listener ltest-listener -eval \
+    "case 'ltest-runner':selenium() of ok -> halt(0); _ -> halt(127) end" \
+    -noshell
+
+check-selenium: clean-eunit compile-tests check-selenium-only
+
+check-all: get-deps clean-eunit compile-no-deps
+    PATH=$(SCRIPT_PATH) ERL_LIBS=$(ERL_LIBS) $(LFETOOL) tests all
+    make check-selenium
+```
 
