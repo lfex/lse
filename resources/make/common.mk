@@ -17,6 +17,7 @@ else
 LFETOOL=lfetool
 endif
 ERL_LIBS=$(shell pwd):$(shell $(LFETOOL) info erllibs)
+CHROMEDRIVER=$(BIN_DIR)/chromedriver
 OS := $(shell uname -s)
 ifeq ($(OS),Linux)
 		HOST=$(HOSTNAME)
@@ -110,7 +111,7 @@ check-integration-only:
 check-system-only:
 	@PATH=$(SCRIPT_PATH) ERL_LIBS=$(ERL_LIBS) $(LFETOOL) tests system
 
-check-selenium-only: clean-eunit compile-tests
+check-selenium-only:
 	@clear
 	@PATH=$(SCRIPT_PATH) ERL_LIBS=$(ERL_LIBS) \
 	erl -cwd "`pwd`" -listener ltest-listener -eval \
@@ -125,7 +126,7 @@ check-all-with-deps: clean-eunit compile check-unit-only \
 	check-integration-only check-system-only clean-eunit
 check-all: get-deps clean-eunit compile-no-deps
 	@PATH=$(SCRIPT_PATH) ERL_LIBS=$(ERL_LIBS) $(LFETOOL) tests all
-	make check-selenium
+	make check-selenium-only
 
 check: check-unit-with-deps
 
@@ -148,11 +149,10 @@ $(CHROMEDRIVER):
 	curl -O http://chromedriver.storage.googleapis.com/2.9/chromedriver_mac32.zip && \
 	unzip chromedriver_mac32.zip
 
-start-chromedriver:
+start-chromedriver: $(CHROMEDRIVER)
 	-@$(CHROMEDRIVER) --verbose &
 
 stop-chromedriver:
 	@ps aux|grep $(CHROMEDRIVER)|grep -v grep|awk '{print $$2}'|xargs kill -15
 
-check-selenium: start-chromedriver check-selenium-only
-	make stop-chromedriver
+check-selenium: clean-eunit compile-tests check-selenium-only
