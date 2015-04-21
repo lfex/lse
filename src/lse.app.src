@@ -1,5 +1,5 @@
 %% -*- erlang -*-
-{application, 'ltest-se',
+{application, 'lse',
  [
   %% A quick description of the application.
   {description, "My project description..."},
@@ -10,7 +10,9 @@
   %% All modules used by the application.
   {modules,
    [
-    'ltest-se'
+    'lse',
+    'lse-util',
+    'ltest-selenium'
    ]},
 
   %% All of the registered names the application uses. This can be ignored.

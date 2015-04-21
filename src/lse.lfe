@@ -1,7 +1,7 @@
-(defmodule ltest-se
+(defmodule lse
   (export all))
 
-(include-lib "ltest-se/include/ltest-se-macros.lfe")
+(include-lib "lse/include/lse-macros.lfe")
 
 (defun get-selenium-beams ()
   (get-selenium-beams "."))

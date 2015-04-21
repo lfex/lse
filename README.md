@@ -1,4 +1,8 @@
-# ltest-se
+# lse
+
+*Selenium support for ltest, the LFE testing framework*
+
+<img src="resources/images/se-logo.png" />
 
 ## Table of Contents
 
@@ -25,8 +29,8 @@ Just add it to your ``rebar.config`` deps:
 ```erlang
   {deps, [
     ...
-    {ltest-se, ".*",
-      {git, "git@github.com:lfex/ltest-se.git", "master"}}
+    {lse, ".*",
+      {git, "git@github.com:lfex/lse.git", "master"}}
       ]}.
 ```
 
@@ -39,8 +43,8 @@ And then do the usual:
 
 ## Usage [&#x219F;](#table-of-contents)
 
-The Selenium macros available in ``include/ltest-se-macros.lfe`` and the
-Selenium functions in ``src/ltest-se.lfe`` are generated with
+The Selenium macros available in ``include/lse-macros.lfe`` and the
+Selenium functions in ``src/lse.lfe`` are generated with
 [kla](https://github.com/lfex/kla), and have thus taken advantage of the feature
 that converts underscores in the Erlang source library to dashes in the wrapped
 LFE library.
@@ -54,47 +58,47 @@ chromedriver docs for that).
 ### From the REPL [&#x219F;](#table-of-contents)
 
 ```cl
-> (ltest-se:start-session
+> (lse:start-session
     'se-session
     "http://localhost:9515/"
-    (ltest-se:default-chrome)
+    (lse:default-chrome)
     10000))
 #(ok <0.46.0>)
-> (ltest-se:set-url 'se-session "http://google.com")
+> (lse:set-url 'se-session "http://google.com")
 ok
-> (ltest-se:get-page-title 'se-session)
+> (lse:get-page-title 'se-session)
 #(ok "Google")
-> (set `#(ok ,elem) (ltest-se:find-element 'se-session "name" "q"))
+> (set `#(ok ,elem) (lse:find-element 'se-session "name" "q"))
 #(ok "0.12670360947959125-1")
-> (ltest-se:send-value 'se-session elem "LFE")
+> (lse:send-value 'se-session elem "LFE")
 ok
-> (ltest-se:submit 'se-session elem)
+> (lse:submit 'se-session elem)
 ok
-> (ltest-se:get-page-title 'se-session)
+> (lse:get-page-title 'se-session)
 #(ok "LFE - Google Search")
 ```
 
 
 ### In a Test Suite [&#x219F;](#table-of-contents)
 
-Here is some sample usage from a test module (with the ``ltest-selenium``
+Here is some sample usage from a test module (with the ``lselenium``
 behaviour):
 
 ```lisp
-(defmodule ltest-selenium-tests
-  (behaviour ltest-selenium)
+(defmodule lselenium-tests
+  (behaviour lselenium)
   (export all))
 
 (include-lib "include/ltest-macros.lfe")
 
 (defun get-session ()
-  'ltest-selenium-session)
+  'lselenium-session)
 
 (defun start-session ()
-  (ltest-se:start-session
+  (lse:start-session
     (get-session)
     "http://localhost:9515/"
-    (ltest-se:default-chrome)
+    (lse:default-chrome)
     10000))
 
 (defun set-up ()
@@ -105,20 +109,20 @@ behaviour):
     (timer:sleep 3000)))
 
 (defun tear-down (pid)
-  (ltest-se:stop-session (get-session)))
+  (lse:stop-session (get-session)))
 
 (deftestcase google-site-page-title (pid)
-  (ltest-se:set-url (get-session) "http://google.com")
-  (is-equal #(ok "Google") (ltest-se:get-page-title (get-session))))
+  (lse:set-url (get-session) "http://google.com")
+  (is-equal #(ok "Google") (lse:get-page-title (get-session))))
 
 (deftestcase google-submit-search (pid)
-  (ltest-se:set-url (get-session) "http://google.com")
-  (let ((`#(ok ,elem) (ltest-se:find-element (get-session) "name" "q")))
-    (ltest-se:send-value (get-session) elem "LFE AND Lisp")
-    (ltest-se:submit (get-session) elem)
+  (lse:set-url (get-session) "http://google.com")
+  (let ((`#(ok ,elem) (lse:find-element (get-session) "name" "q")))
+    (lse:send-value (get-session) elem "LFE AND Lisp")
+    (lse:submit (get-session) elem)
     (timer:sleep 1500)
     (is-equal #(ok "LFE AND Lisp - Google Search")
-              (ltest-se:get-page-title (get-session)))))
+              (lse:get-page-title (get-session)))))
 
 (deftestgen foreach-test-suite
   (tuple
@@ -131,7 +135,7 @@ behaviour):
 ```
 
 To run selenium tests, you will need to add a ``make`` target like the
-following, since ``lfetool`` doesn't yet support the ``ltest-selenium``
+following, since ``lfetool`` doesn't yet support the ``lselenium``
 behaviour:
 
 

@@ -37,7 +37,7 @@ get-version:
 	@PATH=$(SCRIPT_PATH) $(LFETOOL) info version
 	@echo "Erlang/OTP, LFE, & library versions:"
 	@ERL_LIBS=$(ERL_LIBS) PATH=$(SCRIPT_PATH) erl \
-	-eval "lfe_io:format(\"~p~n\",['ltest-se-util':'get-versions'()])." \
+	-eval "lfe_io:format(\"~p~n\",['$(PROJECT)-util':'get-versions'()])." \
 	-noshell -s erlang halt
 
 get-erllibs:
@@ -138,7 +138,7 @@ push-all:
 	git push upstream --tags
 
 install: compile
-	@echo "Installing ltest-se ..."
+	@echo "Installing $(PROJECT)..."
 	@PATH=$(SCRIPT_PATH) lfetool install lfe
 
 $(CHROMEDRIVER):
