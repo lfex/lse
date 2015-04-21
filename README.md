@@ -173,6 +173,33 @@ check-selenium: clean-eunit compile-tests check-selenium-only
 
 check-all: get-deps clean-eunit compile-no-deps
     PATH=$(SCRIPT_PATH) ERL_LIBS=$(ERL_LIBS) $(LFETOOL) tests all
-    make check-selenium
+    make check-selenium-only
 ```
 
+Using the make targets defined above:
+
+* in one terminal window execute ``make start-chromedriver``
+* in another, execute ``make check-selenium``
+* when you are done testing, you can execute ``stop-chromedriver``
+
+Output should look something like the following:
+
+```
+================================ ltest =================================
+
+---------------------------- Selenium Tests ----------------------------
+
+module: unit-lse-tests
+  google_site_page_title_test_case .................................. [ok]
+  google_site_page_title_test_case .................................. [ok]
+  google_submit_search_test_case .................................... [ok]
+  google_submit_search_test_case .................................... [ok]
+  time: 19563ms
+
+summary:
+  Tests: 4  Passed: 4  Skipped: 0  Failed: 0 Erred: 0
+  Total time: 19563ms
+
+
+========================================================================
+```
