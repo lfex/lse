@@ -125,6 +125,7 @@ check-all-with-deps: clean-eunit compile check-unit-only \
 	check-integration-only check-system-only clean-eunit
 check-all: get-deps clean-eunit compile-no-deps
 	@PATH=$(SCRIPT_PATH) ERL_LIBS=$(ERL_LIBS) $(LFETOOL) tests all
+	make check-selenium
 
 check: check-unit-with-deps
 
