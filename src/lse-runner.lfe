@@ -3,7 +3,7 @@
 
 (defun selenium (_)
   (ltest-formatter:test-type-header "Selenium Tests")
-  (run 'selenium))
+  (ltest-runner:run 'selenium))
 
 (defun selenium ()
   (ltest-formatter:test-suite-header)
