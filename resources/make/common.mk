@@ -20,17 +20,17 @@ ERL_LIBS=$(shell pwd):$(shell $(LFETOOL) info erllibs)
 CHROMEDRIVER=$(BIN_DIR)/chromedriver
 OS := $(shell uname -s)
 ifeq ($(OS),Linux)
-		HOST=$(HOSTNAME)
+	HOST=$(HOSTNAME)
 endif
 ifeq ($(OS),Darwin)
-		HOST = $(shell scutil --get ComputerName)
+	HOST = $(shell scutil --get ComputerName)
 endif
 
 $(BIN_DIR):
 	mkdir -p $(BIN_DIR)
 
 get-lfetool: $(BIN_DIR)
-	curl -L -o ./lfetool https://raw.github.com/lfe/lfetool/stable/lfetool && \
+	curl -L -o ./lfetool https://raw.github.com/lfe/lfetool/dev-v1/lfetool && \
 	chmod 755 ./lfetool && \
 	mv ./lfetool $(BIN_DIR)
 
@@ -115,7 +115,7 @@ check-selenium-only:
 	@clear
 	@PATH=$(SCRIPT_PATH) ERL_LIBS=$(ERL_LIBS) \
 	erl -cwd "`pwd`" -listener ltest-listener -eval \
-	"case 'ltest-runner':selenium() of ok -> halt(0); _ -> halt(127) end" \
+	"case 'lse-runner':selenium() of ok -> halt(0); _ -> halt(127) end" \
 	-noshell
 
 check-unit-with-deps: get-deps compile compile-tests check-unit-only
